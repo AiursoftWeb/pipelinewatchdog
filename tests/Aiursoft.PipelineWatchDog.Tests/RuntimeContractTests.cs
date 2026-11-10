@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aiursoft.PipelineWatchDog.Tests;
 
@@ -112,6 +111,17 @@ public sealed class RuntimeContractTests
         using var second = new GitLabToken(Settings.Load(), NullLogger<GitLabToken>.Instance);
         await first.Refresh(CancellationToken.None);
         await Assert.ThrowsExactlyAsync<IOException>(() => second.Refresh(CancellationToken.None));
+    }
+
+    [TestMethod]
+    public void GitLabFailedJobPayloadPreservesItsIdentity()
+    {
+        var job = JsonSerializer.Deserialize<PipelineJob>("""
+            {"id":123,"name":"s360","status":"failed","allow_failure":false,"failure_reason":"script_failure","web_url":"https://gitlab.example/jobs/123"}
+            """, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        Assert.IsNotNull(job);
+        Assert.AreEqual(123L, job.Id);
+        Assert.IsFalse(job.AllowFailure);
     }
 
     private Task SaveCredential(string endpoint, bool pending) => File.WriteAllTextAsync(

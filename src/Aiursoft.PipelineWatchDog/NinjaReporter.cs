@@ -79,11 +79,12 @@ internal sealed class NinjaReporter(AlertCenterApiClient api, GitLab gitlab, Set
             throw new InvalidOperationException("NugetNinja merge history changed during reconciliation.");
         if (active.Count == 0)
         {
+            if (mr == null) throw new InvalidOperationException("An open NugetNinja merge request is required to create an incident.");
             // Always create Sev3 first. An already-old episode is escalated on the next scan, never recreated.
             var title = $"NugetNinja compliance stalled: {project.Name}";
             var content = $"NugetNinja automates project compliance. Timely merging of its changes is essential to maintaining compliance.\n\n" +
                 $"Repository compliance stalled since {since:O} ({Math.Floor(age.TotalHours)} hours at observation {DateTimeOffset.UtcNow:O}).\n" +
-                $"Proposed change: {Limit(mr!.Title, 300)}\nMR description: {Limit(mr.Description ?? "Not provided.", 600)}\n" +
+                $"Proposed change: {Limit(mr.Title, 300)}\nMR description: {Limit(mr.Description ?? "Not provided.", 600)}\n" +
                 $"Changed files (up to 10): {Limit(string.Join(", ", files), 600)}\n" +
                 $"Observed merge status: {snapshot.Value<string>("summary")}\nMR: {mr.WebUrl}\n" +
                 $"Pipeline: {(currentPipeline ? mr.HeadPipeline!.WebUrl : "No pipeline for the current MR head.")}\n" +
