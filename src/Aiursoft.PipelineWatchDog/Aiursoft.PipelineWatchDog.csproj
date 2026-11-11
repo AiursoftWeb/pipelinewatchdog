@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <Version>10.0.1</Version>
+    <Version>10.0.2</Version>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>pipeline-watchdog</AssemblyName>
     <RootNamespace>Aiursoft.PipelineWatchDog</RootNamespace>
@@ -35,6 +35,6 @@
     <InternalsVisibleTo Include="Aiursoft.PipelineWatchDog.Tests"></InternalsVisibleTo>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Aiursoft.AlertCenter.SDK" Version="10.10.3" />
+    <PackageReference Include="Aiursoft.AlertCenter.SDK" Version="10.10.4" />
   </ItemGroup>
 </Project>
