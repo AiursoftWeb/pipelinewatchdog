@@ -1,6 +1,6 @@
 # PipelineWatchDog
 
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.aiursoft.com/aiursoft/pipelinewatchdog/-/blob/master/LICENSE)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/AiursoftWeb/pipelinewatchdog/blob/master/LICENSE)
 [![Pipeline stat](https://badge-proxy.aiursoft.com/aiursoft/pipelinewatchdog/badges/master/pipeline.svg)](https://gitlab.aiursoft.com/aiursoft/pipelinewatchdog/-/pipelines)
 [![Test Coverage](https://badge-proxy.aiursoft.com/aiursoft/pipelinewatchdog/badges/master/coverage.svg)](https://gitlab.aiursoft.com/aiursoft/pipelinewatchdog/-/pipelines)
 [![S360 compliance](https://s360.aiursoft.com/badge.svg?project=aiursoft%2Fpipelinewatchdog)](https://s360.aiursoft.com/SupplyChain?tab=projects&project=aiursoft%2Fpipelinewatchdog&scope=baseline&ecosystem=all)
@@ -23,7 +23,7 @@ dotnet tool install --global Aiursoft.PipelineWatchDog
 
 ## Usage
 
-Set the environment variables described in the [configuration guide](https://gitlab.aiursoft.com/aiursoft/pipelinewatchdog/-/blob/master/docs/configuration.md), then run:
+Set the environment variables described in the [configuration guide](https://github.com/AiursoftWeb/pipelinewatchdog/blob/master/docs/configuration.md), then run:
 
 ```bash
 pipeline-watchdog
