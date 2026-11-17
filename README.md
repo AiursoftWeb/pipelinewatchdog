@@ -37,6 +37,23 @@ Remove the CLI:
 dotnet tool uninstall --global Aiursoft.PipelineWatchDog
 ```
 
+**Deployment with Docker**
+
+The image is built from this repository and runs the same monitoring process. Put the variables from [Configuration](#configuration) in a private environment file, then run one replica:
+
+```bash
+docker run -d --name pipeline-watchdog \
+  --env-file pipeline-watchdog.env \
+  -v pipeline-watchdog-data:/data \
+  aiursoft/pipelinewatchdog:latest
+```
+
+The container runs as UID 1654. Keep `/data` writable and persistent across replacements so credential rotation can resume. To check the last successful scan:
+
+```bash
+docker exec pipeline-watchdog dotnet /app/pipeline-watchdog.dll --healthcheck
+```
+
 ## Usage
 
 Set the environment variables in [Configuration](#configuration), then run:
