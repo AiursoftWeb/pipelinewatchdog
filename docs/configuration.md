@@ -1,6 +1,6 @@
 # Configuration
 
-Scans selected GitLab groups’ default-branch pipelines: Sev3 after 3 hours of failure, Sev2 after 8 hours, and automatic mitigation on recovery. Also monitors stalled NugetNinja compliance per repository: Sev3 after 24 hours, upgrading the same incident to Sev2 after 7 days. A subsequent successful NugetNinja MR merge mitigates the repository’s incident, even when it replaces a deleted MR. Closing or deleting a request alone does not recover it. No repository CI changes are needed.
+The watchdog monitors default-branch pipelines in the selected GitLab groups. It reports a new failure on the next scan at Sev4. Failures aged 3 hours or more are Sev3, and those aged 8 hours or more are Sev2. Escalation updates the same incident. A successful pipeline automatically mitigates it. Also monitors stalled NugetNinja compliance per repository: Sev3 after 24 hours, upgrading the same incident to Sev2 after 7 days. A subsequent successful NugetNinja MR merge mitigates the repository’s incident, even when it replaces a deleted MR. Closing or deleting a request alone does not recover it. No repository CI changes are needed.
 
 Run one replica with `GITLAB_URL`, `ALERTCENTER_URL`, `GITLAB_GROUPS` (comma-separated group paths), `GITLAB_ACCESS_TOKEN` and `ALERTCENTER_API_KEY`. Use a dedicated GitLab personal access token with `read_api` and `self_rotate`; it rotates daily. AlertCenter keys are managed separately.
 

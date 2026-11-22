@@ -49,8 +49,7 @@ internal sealed class Reporter(AlertCenterApiClient api, GitLab gitlab, Settings
         }
         if (!failed) return;
         var age = DateTimeOffset.UtcNow - current.FailedSince!.Value;
-        if (age < TimeSpan.FromHours(3)) return;
-        var level = age >= TimeSpan.FromHours(8) ? "sev2" : "sev3";
+        var level = FailureLevel(age);
         var metadata = new JObject
         {
             ["episode"] = episode, ["failedSince"] = current.FailedSince.Value.ToString("O"),
@@ -74,7 +73,7 @@ internal sealed class Reporter(AlertCenterApiClient api, GitLab gitlab, Settings
         // Manual mitigation/resolution of this exact episode is respected.
         if (!Active(existing)) return;
         if (existing.Metadata["bridge"] is JObject previousState && previousState.Value<long>("pipelineId") > current.Latest.Id) return;
-        if (level == "sev2" && existing.Level is "sev3" or "sev4")
+        if (ShouldEscalate(existing.Level, level))
         {
             await api.ChangeIncidentSeverityAsync(existing.IncidentId, new ChangeIncidentSeverityRequest
             {
@@ -82,7 +81,7 @@ internal sealed class Reporter(AlertCenterApiClient api, GitLab gitlab, Settings
             }).WaitAsync(ct);
             // Re-query before a metadata patch; severity changed the optimistic concurrency version.
             existing = (await api.GetIncidentAsync(existing.IncidentId).WaitAsync(ct)).Incident;
-            log.LogInformation("Escalated incident {IncidentId} to Sev2", existing.IncidentId);
+            log.LogInformation("Escalated incident {IncidentId} to {Level}", existing.IncidentId, level);
         }
         if (!JToken.DeepEquals(existing.Metadata["bridge"], metadata))
             await api.PatchIncidentMetadataAsync(existing.IncidentId, new PatchIncidentMetadataRequest
@@ -90,6 +89,16 @@ internal sealed class Reporter(AlertCenterApiClient api, GitLab gitlab, Settings
                 Version = existing.Version, Property = "bridge", Value = metadata
             }).WaitAsync(ct);
     }
+
+    internal static string FailureLevel(TimeSpan age) => age.TotalHours switch
+    {
+        >= 8 => "sev2",
+        >= 3 => "sev3",
+        _ => "sev4"
+    };
+
+    internal static bool ShouldEscalate(string current, string target) =>
+        (current, target) is ("sev4", "sev3" or "sev2") or ("sev3", "sev2");
 
     private static bool Active(IncidentDetails incident) => incident.Status is not ("mitigated" or "resolved");
     private static Guid Identity(string input) => new(SHA256.HashData(Encoding.UTF8.GetBytes(input)).AsSpan(0, 16));
