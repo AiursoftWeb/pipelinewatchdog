@@ -96,6 +96,7 @@ internal sealed class NinjaReporter(AlertCenterApiClient api, GitLab gitlab, Set
             {
                 ReportId = new Guid(SHA256.HashData(Encoding.UTF8.GetBytes(projectSource + ":" + since.ToString("O"))).AsSpan(0, 16)),
                 Title = Limit(title, 200), Content = Limit(content, 4000), Level = "sev3", OccurredAtUtc = since,
+                InvestigateUrl = mr.WebUrl,
                 Metadata = new JObject { ["source"] = projectSource, ["ninjaProject"] = projectSource, ["ninja"] = snapshot }
             }).WaitAsync(ct);
             log.LogInformation("Created Sev3 NugetNinja incident for project {ProjectId}", project.Id);

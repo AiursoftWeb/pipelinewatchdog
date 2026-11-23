@@ -35,6 +35,6 @@
     <InternalsVisibleTo Include="Aiursoft.PipelineWatchDog.Tests"></InternalsVisibleTo>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Aiursoft.AlertCenter.SDK" Version="10.10.5" />
+    <PackageReference Include="Aiursoft.AlertCenter.SDK" Version="10.10.6" />
   </ItemGroup>
 </Project>

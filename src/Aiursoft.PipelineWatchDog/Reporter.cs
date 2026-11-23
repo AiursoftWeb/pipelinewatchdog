@@ -65,6 +65,7 @@ internal sealed class Reporter(AlertCenterApiClient api, GitLab gitlab, Settings
             {
                 ReportId = reportId, Title = title.Length > 200 ? title[..200] : title,
                 Content = reason, Level = level, OccurredAtUtc = current.FailedSince.Value,
+                InvestigateUrl = current.Latest.WebUrl,
                 Metadata = new JObject { ["source"] = source, ["bridge"] = metadata }
             }).WaitAsync(ct);
             log.LogInformation("Created {Level} incident for project {ProjectId}", level, project.Id);
